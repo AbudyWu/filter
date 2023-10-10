@@ -22,7 +22,6 @@ def MeanFilter(img, name, path):
 
 
 def GaussianFilter(img, name, path):
-    # img = cv2.imread(img, cv2.IMREAD_COLOR)
     cv2.imshow(f"{name}_ori", img)
     for i in mask_size:
         gaussian = cv2.GaussianBlur(img, (i, i), 7)
@@ -32,7 +31,6 @@ def GaussianFilter(img, name, path):
 
 
 def MedianFilter(img, name, path):
-    # img = cv2.imread(img, cv2.IMREAD_COLOR)
     cv2.imshow(f"{name}_ori", img)
     for i in mask_size:
         median = cv2.medianBlur(img, i)
@@ -42,7 +40,6 @@ def MedianFilter(img, name, path):
 
 
 def SobelFilter(img, name, path):
-    # img = cv2.imread(img, cv2.IMREAD_COLOR)
     for j in sobel_ddepth:
         for i in sobel_ksize:
             x = cv2.Sobel(img, j, 1, 0, i)
@@ -63,7 +60,6 @@ def CannyFilter(img, name, path):
     retval = cv2.useOptimized()
     cv2.setUseOptimized(True)
     print("Optimized", retval)
-    # img = cv2.imread(img,0)
     for j in sobel_ddepth:
         for i in sobel_ksize:
             # x = cv2.Sobel(img, j, 1, 0, i,ddepth=cv2.CV_16S)
@@ -115,8 +111,8 @@ def Complex(img, name, path):
 
 
 if __name__ == "__main__":
-    # path1 = mk("filter_output", "smooth")
-    # path2 = mk("filter_output", "edge")
+    path1 = mk("filter_output", "smooth")
+    path2 = mk("filter_output", "edge")
     path3 = mk("filter_output", "complex")
 
     Lenna = cv2.imread("Lenna.png", 0)
@@ -126,25 +122,25 @@ if __name__ == "__main__":
     car = cv2.resize(car_ori, (512, 512))
     babe = cv2.resize(babe_ori, (512, 512))
 
-    # MeanFilter(Lenna,"Lenna",path1)
-    # MeanFilter(babe, "babe", path1)
-    # MeanFilter(car, "car", path1)
+    MeanFilter(Lenna,"Lenna",path1)
+    MeanFilter(babe, "babe", path1)
+    MeanFilter(car, "car", path1)
 
-    # GaussianFilter(Lenna,"Lenna",path1)
-    # GaussianFilter(babe, "babe", path1)
-    # GaussianFilter(car, "car", path1)
+    GaussianFilter(Lenna,"Lenna",path1)
+    GaussianFilter(babe, "babe", path1)
+    GaussianFilter(car, "car", path1)
 
-    # MedianFilter(Lenna,"Lenna",path1)
-    # MedianFilter(babe, "babe", path1)
-    # MedianFilter(car, "car", path1)
+    MedianFilter(Lenna,"Lenna",path1)
+    MedianFilter(babe, "babe", path1)
+    MedianFilter(car, "car", path1)
 
-    # SobelFilter(Lenna,"Lenna",path2)
-    # SobelFilter(babe,"babe",path2)
-    # SobelFilter(car,"car",path2)
+    SobelFilter(Lenna,"Lenna",path2)
+    SobelFilter(babe,"babe",path2)
+    SobelFilter(car,"car",path2)
 
-    # CannyFilter(Lenna,"Lenna",path2)
-    # CannyFilter(babe,"babe",path2)
-    # CannyFilter(car,"car",path2)
+    CannyFilter(Lenna,"Lenna",path2)
+    CannyFilter(babe,"babe",path2)
+    CannyFilter(car,"car",path2)
 
     Complex(Lenna,"Lenna",path3)
     Complex(babe,"babe",path3)
