@@ -33,7 +33,7 @@ def GaussianFilter(img, name, path):
 def MedianFilter(img, name, path):
     cv2.imshow(f"{name}_ori", img)
     for i in mask_size:
-        median = cv2.medianBlur(img, i)
+        median = cv2.medianBlur(img,ksize= i)
         cv2.imshow(f"{name}_median{i}*{i}", median)
         cv2.imwrite(f"./{path}/{name}_median{i}*{i}.png", median)
     cv2.waitKey(0)
@@ -42,8 +42,8 @@ def MedianFilter(img, name, path):
 def SobelFilter(img, name, path):
     for j in sobel_ddepth:
         for i in sobel_ksize:
-            x = cv2.Sobel(img, j, 1, 0, i)
-            y = cv2.Sobel(img, j, 0, 1, i)
+            x = cv2.Sobel(img, j, 1, 0, ksize= i)
+            y = cv2.Sobel(img, j, 0, 1, ksize= i)
             absX = cv2.convertScaleAbs(x)
             absY = cv2.convertScaleAbs(y)
             dst = cv2.addWeighted(absX, 0.5, absY, 0.5, 0)
@@ -62,12 +62,7 @@ def CannyFilter(img, name, path):
     print("Optimized", retval)
     for j in sobel_ddepth:
         for i in sobel_ksize:
-            # x = cv2.Sobel(img, j, 1, 0, i,ddepth=cv2.CV_16S)
-            # y = cv2.Sobel(img, j, 0, 1, i,ddepth=cv2.CV_16S)
-            # absX = cv2.convertScaleAbs(x)
-            # absY = cv2.convertScaleAbs(y)
-            # canny = cv2.Canny(absX,absY,50,150)
-            canny = cv2.Canny(img, j, 50, 150, apertureSize=i)
+            canny = cv2.Canny(img, 50, 150, apertureSize=i)
             cv2.imshow(f"{name}_Canny{i}*{i}_{text[j]}", canny)
             cv2.imwrite(f"./{path}/{name}_Canny{i}*{i}_{text[j]}.png", canny)
     cv2.waitKey(0)
@@ -79,8 +74,8 @@ def Complex(img, name, path):
         kernel = np.ones((5, 5), dtype=np.float32) / (5 * 5)
         mean_img = cv2.filter2D(img, -1, kernel)
         # sobel
-        x = cv2.Sobel(mean_img, cv2.CV_16S, 1, 0, i)
-        y = cv2.Sobel(mean_img, cv2.CV_16S, 0, 1, i)
+        x = cv2.Sobel(mean_img, cv2.CV_16S, 1, 0,ksize= i)
+        y = cv2.Sobel(mean_img, cv2.CV_16S, 0, 1,ksize= i)
         absX = cv2.convertScaleAbs(x)
         absY = cv2.convertScaleAbs(y)
         dst1 = cv2.addWeighted(absX, 0.5, absY, 0.5, 0)
@@ -95,8 +90,8 @@ def Complex(img, name, path):
         ##gaussian filter
         gaussian = cv2.GaussianBlur(img, (i, i), 7)
         # sobel
-        xx = cv2.Sobel(gaussian, cv2.CV_16S, 1, 0, i)
-        yy = cv2.Sobel(gaussian, cv2.CV_16S, 0, 1, i)
+        xx = cv2.Sobel(gaussian, cv2.CV_16S, 1, 0,ksize= i)
+        yy = cv2.Sobel(gaussian, cv2.CV_16S, 0, 1,ksize= i)
         absX = cv2.convertScaleAbs(xx)
         absY = cv2.convertScaleAbs(yy)
         dst2 = cv2.addWeighted(absX, 0.5, absY, 0.5, 0)
@@ -114,6 +109,7 @@ if __name__ == "__main__":
     path1 = mk("filter_output", "smooth")
     path2 = mk("filter_output", "edge")
     path3 = mk("filter_output", "complex")
+    # path4 = mk("filter_output","noise")
 
     Lenna = cv2.imread("Lenna.png", 0)
     # Lenna_color = cv2.imread("Lenna.png", cv2.IMREAD_COLOR)
@@ -121,6 +117,9 @@ if __name__ == "__main__":
     babe_ori = cv2.imread("babe.jpg", 0)
     car = cv2.resize(car_ori, (512, 512))
     babe = cv2.resize(babe_ori, (512, 512))
+
+    # star = cv2.imread("noise.bmp",0)
+    # MedianFilter(star,"star",path4)
 
     MeanFilter(Lenna,"Lenna",path1)
     MeanFilter(babe, "babe", path1)
