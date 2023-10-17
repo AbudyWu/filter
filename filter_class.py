@@ -29,9 +29,9 @@ class Edge:
     def SobelFilter(self, img, i, ddepth=cv2.CV_8U, *args, **kwargs):
         self.x = cv2.Sobel(self, img, ddepth, 1, 0, ksize=i)
         self.y = cv2.Sobel(self, img, ddepth, 0, 1, ksize=i)
-        self.absX = cv2.convertScaleAbs(self, x)
-        self.absY = cv2.convertScaleAbs(self, y)
-        self.dst = cv2.addWeighted(self, absX, 0.5, absY, 0.5, 0)
+        self.absX = cv2.convertScaleAbs(self, self.x)
+        self.absY = cv2.convertScaleAbs(self, self.y)
+        self.dst = cv2.addWeighted(self, self.absX, 0.5, self.absY, 0.5, 0)
         return self.absX, self.absY, self.dst
 
     @CannySpeedUp
@@ -66,16 +66,26 @@ class Complex(Smooth, Edge):
 
 
 if __name__ == "__main__":
-    img = cv2.imread("babe.jpg", cv2.IMREAD_COLOR)
-    filter_ls = [Smooth.MeanFilter, Smooth.GaussianFilter, Smooth.MedianFilter]
-    filter_name_ls = ["Mean", "Gaussian", "Median"]
-    class_ls = [Smooth]
+    # img = cv2.imread("babe.jpg", cv2.IMREAD_COLOR)
+    img = cv2.imread("babe.jpg", 0)
+    class_ls = [Smooth, Edge, Complex]
+    filter_ls = [
+        [Smooth.MeanFilter, Smooth.GaussianFilter, Smooth.MedianFilter],
+        [Edge.SobelFilter, Edge.CannyFilter],
+        [Complex.mean_sobel, Complex.mean_canny, Complex.gaussian_sobel, Complex.mean_canny]
+        ]
+    filter_name_ls = [
+        ["Mean", "Gaussian", "Median"],
+        ["Sobel", "Canny"],
+        ["Mean_Sobel", "Mean_Canny", "Gaussian_Sobel", "Gaussian_Canny"]
+    ]
+
+    kernel_size_ls = [[3, 15, 27], [3, 5, 7], [3, 5]]
+    
     fig, axs = plt.subplots(3, 3, figsize=(18, 18))
 
-    kernel_size_ls = [3, 15, 27]
-
     for i, (filter_func, filter_name) in enumerate(zip(filter_ls, filter_name_ls)):
-        for j, (kernel_size) in enumerate(kernel_size_ls):
+        for j, (kernel_size) in enumerate(kernel_size_ls[0]):
             result = filter_func(self=class_ls[0], img=img, i=kernel_size)
             axs[i, j].imshow(
                 cv2.cvtColor(result, cv2.COLOR_BGR2RGB),
